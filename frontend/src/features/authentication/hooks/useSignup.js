@@ -12,9 +12,11 @@ const useSignup = () => {
         "http://localhost:8000/api/auth/signup",
         formData
       );
-      console.log(res.data);
+      if (res.status === 200) {
+        alert("user created succesfully!");
+      }
     } catch (error) {
-      console.log(error);
+      alert(error.response.data);
     } finally {
       setLoading(false);
     }

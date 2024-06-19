@@ -1,8 +1,8 @@
-FROM node:18-alphine
+FROM node:20-alpine
 
-WORKDIR /backend
+WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json .
 
 RUN npm install
 
@@ -12,25 +12,17 @@ EXPOSE 3000
 
 CMD ["npm","run","server"]
 
-# Build the application
-RUN npm run build
 
-FROM nginx:alphine AS runner
+FROM node:20-alpine
 
-# Remove the default Nginx static assets
-WORKDIR /usr/share/nginx/html
+WORKDIR /app
 
-# Remove the default Nginx static assets
-RUN rm -rf ./*
+COPY package*.json .
 
-# Copy built artifacts from builder stage
-COPY --from=builder /builder/dist /usr/share/nginx/html
+RUN npm install
 
-# Copy the Nginx configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY . .
 
-# Inform Docker that the container is listening on port 80
-EXPOSE 80
+EXPOSE 5173
 
-# Define the command to run the app
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+CMD ["npm","run","dev"]
